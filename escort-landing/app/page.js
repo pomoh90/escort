@@ -11,6 +11,7 @@ import { Playfair_Display } from 'next/font/google';
 import { Lora } from 'next/font/google';
 import Logo from './components/Logo';
 import { contactInfo } from './components/info';
+import Popup from './components/pop';
 
 const roboto = Roboto({ subsets: ['latin'], weight: ['400', '700'] });
 const playfair = Playfair_Display({ subsets: ['latin'], weight: ['400', '700'] });
@@ -22,53 +23,63 @@ const images = [
   '/images/photo3.jpg',
   '/images/photo4.jpg',
   '/images/photo5.jpg',
+  '/images/photo6.jpg',
+  '/images/photo7.jpg',
 ];
 
 export default function Home() {
   const [currentImage, setCurrentImage] = useState(0);
   const [hearts, setHearts] = useState([]);
   const [isFooterVisible, setIsFooterVisible] = useState(false);
+  const [popupClosed, setPopupClosed] = useState(false);
 
   useEffect(() => {
-    AOS.init();
+    document.body.classList.toggle('popup-open', !popupClosed);
+  }, [popupClosed]);
 
-    const interval = setInterval(() => {
-      setCurrentImage((prev) => (prev + 1) % images.length);
-    }, 3000); // Меняем фото каждые 3 секунды
+  useEffect(() => {
+    if (popupClosed) {
+      AOS.init();
 
-    const heartInterval = setInterval(() => {
-      setHearts((prev) => {
-        if (prev.length >= 10) return prev.slice(1);
-        return [
-          ...prev,
-          {
-            id: Math.random(),
-            left: Math.random() * 100,
-            top: Math.random() * 100,
-            size: Math.random() * 20 + 10,
-            opacity: Math.random() * 0.7 + 0.3, // Максимальная прозрачность 70%
-          },
-        ];
-      });
-    }, 500);
+      const interval = setInterval(() => {
+        setCurrentImage((prev) => (prev + 1) % images.length);
+      }, 3000);
 
-    const observer = new IntersectionObserver(
-      ([entry]) => setIsFooterVisible(entry.isIntersecting),
-      { threshold: 0.1 }
-    );
+      const heartInterval = setInterval(() => {
+        setHearts((prev) => {
+          if (prev.length >= 10) return prev.slice(1);
+          return [
+            ...prev,
+            {
+              id: Math.random(),
+              left: Math.random() * 100,
+              top: Math.random() * 100,
+              size: Math.random() * 20 + 10,
+              opacity: Math.random() * 0.7 + 0.3,
+            },
+          ];
+        });
+      }, 500);
 
-    const footer = document.querySelector('footer');
-    if (footer) observer.observe(footer);
+      const observer = new IntersectionObserver(
+        ([entry]) => setIsFooterVisible(entry.isIntersecting),
+        { threshold: 0.1 }
+      );
 
-    return () => {
-      clearInterval(interval);
-      clearInterval(heartInterval);
-      if (footer) observer.unobserve(footer);
-    };
-  }, []);
+      const footer = document.querySelector('footer');
+      if (footer) observer.observe(footer);
+
+      return () => {
+        clearInterval(interval);
+        clearInterval(heartInterval);
+        if (footer) observer.unobserve(footer);
+      };
+    }
+  }, [popupClosed]);
 
   return (
     <>
+      {!popupClosed && <Popup onClose={() => setPopupClosed(true)} />}
       <Head>
         <title>Bella Dolce</title>
         <meta name="description" content="Welcome to Bella Dolce - Your trusted partner for exclusive connections and high-quality companionship services." />
@@ -79,7 +90,7 @@ export default function Home() {
       </Head>
 
       <div
-        className={`${styles.container} ${lora.className}`}
+        className={`${styles.container} ${lora.className} ${!popupClosed ? 'page-blurred' : ''}`}
         style={{
           backgroundColor: '#1e1e1e',
           color: '#f0f0f0',
@@ -91,10 +102,7 @@ export default function Home() {
         }}
       >
         <header className={styles.header} style={{ textAlign: 'center' }}>
-          <h1
-            className={playfair.className}
-            style={{ color: '#ff69b4', fontFamily: 'cursive' }}
-          >
+          <h1 className={playfair.className} style={{ color: '#ff69b4', fontFamily: 'cursive' }}>
             Welcome to Bella Dolce
           </h1>
           <p className={lora.className}>
@@ -107,11 +115,11 @@ export default function Home() {
           style={{
             textAlign: 'center',
             position: 'relative',
-            height: '400px',
             flexGrow: 1,
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
+            flexDirection: 'column',
           }}
         >
           <div
@@ -119,8 +127,8 @@ export default function Home() {
             data-aos="fade-up"
             style={{
               width: '100%',
-              maxWidth: '600px',
-              height: '100%',
+              maxWidth: '100%',
+              height: '500px',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
@@ -145,6 +153,35 @@ export default function Home() {
               />
             ))}
             <Logo />
+          </div>
+
+          <div
+            className={styles.thumbnailContainer}
+            style={{
+              marginTop: '10px',
+              display: 'flex',
+              justifyContent: 'center',
+              gap: '5px',
+              overflowX: 'auto',
+            }}
+          >
+            {images.map((src, index) => (
+              <img
+                key={`thumb-${index}`}
+                src={src}
+                alt={`Thumbnail ${index}`}
+                className={styles.thumbnail}
+                onClick={() => setCurrentImage(index)}
+                style={{
+                  width: '50px',
+                  height: '50px',
+                  objectFit: 'cover',
+                  cursor: 'pointer',
+                  border: currentImage === index ? '2px solid #ff69b4' : '2px solid transparent',
+                  borderRadius: '5px',
+                }}
+              />
+            ))}
           </div>
         </section>
 
@@ -204,13 +241,22 @@ export default function Home() {
               className={playfair.className}
               style={{ fontFamily: 'cursive', color: '#ff69b4' }}
             >
-              Contact Us
+              Contact Me
             </h2>
             <p>
               Phone: <a href={`tel:${contactInfo.phone}`} style={{ color: '#ff69b4', textDecoration: 'none' }}>{contactInfo.phone}</a>
             </p>
             <p>
               Email: <a href={`mailto:${contactInfo.email}`} style={{ color: '#ff69b4', textDecoration: 'none' }}>{contactInfo.email}</a>
+            </p>
+            <p>
+              My reviews: <a href={contactInfo.ter} style={{ color: '#ff69b4', textDecoration: 'none' }}>{contactInfo.terShort}</a>
+            </p>
+            <p>
+              Twitter/X: <a href={contactInfo.twitterLink} style={{ color: '#ff69b4', textDecoration: 'none' }}>{contactInfo.twitter}</a>
+            </p>
+            <p>
+              Tryst: <a href={contactInfo.trystLink} style={{ color: '#ff69b4', textDecoration: 'none' }}>{contactInfo.tryst}</a>
             </p>
           </div>
         </section>
@@ -282,18 +328,17 @@ export default function Home() {
           @media (max-width: 768px) {
             .${styles.imageContainer} {
               position: relative;
-              width: 90%;
-              max-width: 400px;
+              width: 100%;
+              max-width: 100%;
               height: 300px;
             }
             .${styles.image} {
               width: 100%;
-              max-width: 400px;
+              max-width: 100%;
             }
           }
         `}</style>
       </div>
-
     </>
   );
 }

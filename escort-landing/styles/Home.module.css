@@ -1,4 +1,21 @@
 /* styles/Home.module.css */
+.page-blurred {
+  filter: blur(6px);
+  background-color: rgba(30, 30, 30, 0.7); /* мокрый асфальт */
+  pointer-events: none;
+  user-select: none;
+  transition: filter 0.3s ease, background-color 0.3s ease;
+}
+
+.popup-open {
+  overflow: hidden;
+}
+
+.popup-container {
+  pointer-events: auto;
+}
+
+
 .container {
   background-color: #1a1a1a;
   color: #f2f2f2;
@@ -29,10 +46,13 @@
 }
 
 .imageContainer {
-  width: 80%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   overflow: hidden;
-  border-radius: 10px;
 }
+
 
 .image {
   width: 100%;
