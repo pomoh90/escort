@@ -37,14 +37,20 @@ export default function Home() {
     document.body.classList.toggle('popup-open', !popupClosed);
   }, [popupClosed]);
 
-  useEffect(() => {
-    if (popupClosed) {
-      AOS.init();
+  const popupEnabled = 0; // 1 - включить попап, 0 - отключить
 
+  useEffect(() => {
+    document.body.classList.toggle('popup-open', popupEnabled === 1 && !popupClosed);
+  }, [popupClosed, popupEnabled]);
+  
+  useEffect(() => {
+    if (popupEnabled === 0 || popupClosed) {
+      AOS.init();
+  
       const interval = setInterval(() => {
         setCurrentImage((prev) => (prev + 1) % images.length);
       }, 3000);
-
+  
       const heartInterval = setInterval(() => {
         setHearts((prev) => {
           if (prev.length >= 10) return prev.slice(1);
@@ -60,26 +66,26 @@ export default function Home() {
           ];
         });
       }, 500);
-
+  
       const observer = new IntersectionObserver(
         ([entry]) => setIsFooterVisible(entry.isIntersecting),
         { threshold: 0.1 }
       );
-
+  
       const footer = document.querySelector('footer');
       if (footer) observer.observe(footer);
-
+  
       return () => {
         clearInterval(interval);
         clearInterval(heartInterval);
         if (footer) observer.unobserve(footer);
       };
     }
-  }, [popupClosed]);
+  }, [popupClosed, popupEnabled]);
 
   return (
     <>
-      {!popupClosed && <Popup onClose={() => setPopupClosed(true)} />}
+{popupEnabled === 1 && !popupClosed && <Popup onClose={() => setPopupClosed(true)} />}
       <Head>
         <title>Bella Dolce</title>
         <meta name="description" content="Welcome to Bella Dolce - Your trusted partner for exclusive connections and high-quality companionship services." />
