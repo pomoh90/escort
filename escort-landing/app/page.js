@@ -218,8 +218,8 @@ export default function Home() {
             >
              Donation
             </h2>
-            <p>Inacll 30min  $500</p> 
-            <p>Inacll 1h  $700</p> 
+            {/* <p>Inacll 30min  $500</p>  */}
+            <p>Inacll 1h  $800</p> 
             <p>Outcall $800 + Uber</p>
           </div>
 
