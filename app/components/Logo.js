@@ -4,7 +4,7 @@ export default function Logo() {
       <div
         style={{
           position: 'absolute',
-          bottom: '10px',
+          bottom: '50px',
           right: '10px',
           backgroundColor: 'rgba(0, 0, 0, 0.5)',
           padding: '5px',

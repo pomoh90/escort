@@ -22,9 +22,7 @@ const images = [
   '/images/photo2.jpg',
   '/images/photo3.jpg',
   '/images/photo4.jpg',
-  '/images/photo5.jpg',
-  '/images/photo6.jpg',
-  '/images/photo7.jpg',
+
 ];
 
 export default function Home() {
@@ -134,7 +132,7 @@ export default function Home() {
             style={{
               width: '100%',
               maxWidth: '100%',
-              height: '500px',
+              height: '650px',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
@@ -217,7 +215,7 @@ export default function Home() {
              Donation
             </h2>
             {/* <p>Inacll 30min  $500</p>  */}
-            <p>Inacll 1h  $800</p> 
+            <p>Inacll 1h  $900</p> 
             <p>Outcall $800 + Uber</p>
           </div>
 
@@ -330,13 +328,25 @@ export default function Home() {
           @media (max-width: 768px) {
             .${styles.imageContainer} {
               position: relative;
-              width: 100%;
-              max-width: 100%;
-              height: 300px;
+              width: 100vw;
+              max-width: 100vw;
+              height: 400px;
+              margin-left: calc(-50vw + 50%);
+              margin-right: calc(-50vw + 50%);
             }
             .${styles.image} {
               width: 100%;
               max-width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+          }
+          
+          @media (max-width: 480px) {
+            .${styles.imageContainer} {
+              height: 300px;
+              margin-left: calc(-50vw + 50%);
+              margin-right: calc(-50vw + 50%);
             }
           }
         `}</style>
