@@ -22,6 +22,7 @@ const images = [
   '/images/photo2.jpg',
   '/images/photo3.jpg',
   '/images/photo4.jpg',
+  '/images/photo5.jpg',
 
 ];
 
